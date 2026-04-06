@@ -16,6 +16,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Search
@@ -176,6 +177,7 @@ fun CepScreen(modifier: Modifier = Modifier) {
                                 response: Response<List<Endereco>>
                             ) {
                                 Log.i("Teste","${response.body()}" )
+                               // listaEnderecos = response.body()!!
                             }
                             //falha no servidor nao consegui te responder
                             override fun onFailure(
@@ -198,15 +200,15 @@ fun CepScreen(modifier: Modifier = Modifier) {
         LazyColumn(
             modifier = Modifier.padding(horizontal = 16.dp)
         ) {
-            items(120) {
-                CardEndereco()
+            items(listaEnderecos) {
+                CardEndereco(it)
             }
         }
     }
 }
 
 @Composable
-fun CardEndereco() {
+fun CardEndereco(endereco : Endereco) {
     Card(
         modifier = Modifier.fillMaxWidth()
             .padding(bottom = 4.dp)
@@ -215,11 +217,11 @@ fun CardEndereco() {
             modifier = Modifier.fillMaxWidth()
                 .padding(8.dp)
         ) {
-            Text(text = "CEP:")
-            Text(text = "Rua:")
-            Text(text = "Cidade:")
-            Text(text = "Bairro:")
-            Text(text = "UF:")
+            Text(text = "CEP: ${endereco.cep}")
+            Text(text = "Rua:${endereco.rua}")
+            Text(text = "Cidade:${endereco.cidade}")
+            Text(text = "Bairro:${endereco.Bairro}")
+            Text(text = "UF:${endereco.uf}")
         }
     }
 }
