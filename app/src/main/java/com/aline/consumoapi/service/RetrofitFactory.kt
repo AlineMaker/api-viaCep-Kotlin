@@ -2,7 +2,7 @@ package com.aline.consumoapi.service
 
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
-
+//configuracao
 class RetrofitFactory {
 
     val Base_URL = "https://viacep.com.br/ws/"

@@ -36,7 +36,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.aline.consumoapi.model.Endereco
@@ -73,7 +72,11 @@ fun CepScreen(modifier: Modifier = Modifier) {
 
         var listaEnderecos by remember {
             mutableStateOf(listOf<Endereco>())
+
         }
+    var endereco by remember {
+        mutableStateOf(Endereco())
+    }
     Column(
         modifier = modifier.fillMaxWidth()
     ) {
@@ -112,7 +115,31 @@ fun CepScreen(modifier: Modifier = Modifier) {
                     modifier = Modifier.fillMaxWidth(),
                     label = { Text(text = "Qual CEP está buscando?") },
                     trailingIcon = {
-                        IconButton( onClick = { /* TODO */ } ) {
+                        IconButton( onClick = {
+                            var call = RetrofitFactory().getEnderecoService().getEnderecoByCep(
+                                cep = cepState,
+                                )
+                            call.enqueue(object : Callback<Endereco> {
+                                override fun onResponse(
+                                    call: Call<Endereco>,
+                                    response: Response<Endereco>
+                                ) {
+                                   // Log.i("Teste","${response.body()}" )
+                                    endereco = response.body()!!
+                                    listaEnderecos = listOf(endereco)
+                                }
+                                //falha no servidor nao consegui te responder
+                                override fun onFailure(
+                                    call: Call<Endereco>,
+                                    t: Throwable
+                                ) {
+                                    Log.i("Teste","${t.message}" )
+                                }
+                            })
+                        } ) {
+
+
+
                             Icon(
                                 imageVector = Icons.Default.Search,
                                 contentDescription = ""
@@ -170,14 +197,14 @@ fun CepScreen(modifier: Modifier = Modifier) {
                     )
                        // ideia de await enqueue fila
                         //por mouse no object e criar membros , tipo try catch onfailure é error
-
+            //habilitar o uso a internet
                         call.enqueue(object : Callback<List<Endereco>> {
                             override fun onResponse(
                                 call: Call<List<Endereco>>,
                                 response: Response<List<Endereco>>
                             ) {
-                                Log.i("Teste","${response.body()}" )
-                               // listaEnderecos = response.body()!!
+                              //  Log.i("Teste","${response.body()}" )
+                               listaEnderecos = response.body()!!
                             }
                             //falha no servidor nao consegui te responder
                             override fun onFailure(
@@ -220,7 +247,7 @@ fun CardEndereco(endereco : Endereco) {
             Text(text = "CEP: ${endereco.cep}")
             Text(text = "Rua:${endereco.rua}")
             Text(text = "Cidade:${endereco.cidade}")
-            Text(text = "Bairro:${endereco.Bairro}")
+            Text(text = "Bairro:${endereco.bairro}")
             Text(text = "UF:${endereco.uf}")
         }
     }
